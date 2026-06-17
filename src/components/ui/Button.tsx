@@ -1,36 +1,29 @@
-import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 cursor-pointer",
-  {
-    variants: {
-      variant: {
-        primary: "bg-primary text-white hover:bg-primary-dark shadow-lg shadow-primary/20",
-        outline: "border border-primary text-primary hover:bg-primary/10",
-        ghost: "text-muted hover:text-slate-100 hover:bg-slate-700/30",
-      },
-      size: {
-        sm: "px-4 py-2 text-sm",
-        md: "px-6 py-3 text-sm",
-        lg: "px-8 py-4 text-base",
-      },
-    },
-    defaultVariants: { variant: "primary", size: "md" },
-  }
-);
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "primary" | "outline" | "ghost";
+  size?: "sm" | "md" | "lg";
   href?: string;
 }
 
-export function Button({ className, variant, size, href, children, ...props }: ButtonProps) {
+export default function Button({ className, variant = "primary", size = "md", href, children, ...props }: ButtonProps) {
+  const classes = cn(
+    "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent/20",
+    {
+      "bg-primary dark:bg-accent text-white hover:bg-primary/90 dark:hover:bg-accent/90": variant === "primary",
+      "border border-primary/20 dark:border-gray-600 text-primary dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800": variant === "outline",
+      "text-primary dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800": variant === "ghost",
+    },
+    {
+      "px-4 py-2 text-sm": size === "sm",
+      "px-6 py-2.5 text-sm": size === "md",
+      "px-8 py-3.5 text-base": size === "lg",
+    },
+    className
+  );
+
   if (href) {
-    return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ variant, size }), className)}>
-        {children}
-      </a>
-    );
+    return <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>{children}</a>;
   }
-  return <button className={cn(buttonVariants({ variant, size }), className)} {...props}>{children}</button>;
+  return <button className={classes} {...props}>{children}</button>;
 }

@@ -1,42 +1,45 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { Container } from "../ui/Container";
-import { SectionHeading } from "../ui/SectionHeading";
+import Container from "../ui/Container";
 import { faqs } from "../../data/content";
 import { cn } from "../../lib/utils";
 
-export function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
+function FAQItem({ q, a, index }: { q: string; a: string; index: number }) {
+  const [open, setOpen] = useState(false);
   return (
-    <section id="faq" className="py-24 bg-surface/50">
-      <Container className="max-w-3xl">
-        <SectionHeading title="Frequently Asked Questions" />
+    <div className="border border-card-border dark:border-gray-700 rounded-xl overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-controls={`faq-panel-${index}`}
+        className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+      >
+        <span className="font-medium text-sm text-primary dark:text-white pr-4">{q}</span>
+        <ChevronDown size={18} className={cn("text-muted transition-transform duration-300 flex-shrink-0", open && "rotate-180")} />
+      </button>
+      <div
+        id={`faq-panel-${index}`}
+        role="region"
+        className={cn("overflow-hidden transition-all duration-300", open ? "max-h-60" : "max-h-0")}
+      >
+        <p className="px-5 pb-5 text-sm text-muted leading-relaxed">{a}</p>
+      </div>
+    </div>
+  );
+}
 
-        <div className="space-y-3">
+export default function FAQ() {
+  return (
+    <section id="faq" className="py-24 bg-gray-50 dark:bg-gray-900/50">
+      <Container className="max-w-3xl">
+        <div className="text-center mb-12 reveal">
+          <p className="text-xs uppercase tracking-label text-accent font-semibold mb-3">Support</p>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-heading-lg text-primary dark:text-white">Frequently Asked Questions</h2>
+        </div>
+
+        <div className="space-y-3 reveal-children">
           {faqs.map((faq, i) => (
-            <div key={i} className="border border-slate-700/30 rounded-xl overflow-hidden">
-              <button
-                onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between p-5 text-left hover:bg-surface/50 transition-colors"
-              >
-                <span className="font-medium text-slate-100">{faq.q}</span>
-                <ChevronDown size={18} className={cn("text-muted transition-transform", openIndex === i && "rotate-180")} />
-              </button>
-              <AnimatePresence>
-                {openIndex === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <p className="px-5 pb-5 text-sm text-muted">{faq.a}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <FAQItem key={i} q={faq.q} a={faq.a} index={i} />
           ))}
         </div>
       </Container>

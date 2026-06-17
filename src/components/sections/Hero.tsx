@@ -1,106 +1,112 @@
-import { motion } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
 import { ExternalLink } from "lucide-react";
+import Container from "../ui/Container";
+import Button from "../ui/Button";
+import { GithubIcon } from "../ui/GithubIcon";
 
-function GithubIcon({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-    </svg>
-  );
-}
-import { Container } from "../ui/Container";
-import { Button } from "../ui/Button";
-
-const ratBadges = [
-  { label: "2G", color: "bg-slate-500" },
-  { label: "3G", color: "bg-blue-500" },
-  { label: "4G", color: "bg-amber-500" },
-  { label: "5G", color: "bg-emerald-500" },
+const showcaseImages = [
+  { alt: "KPI Charts", bg: "from-accent/20 to-blue-500/10" },
+  { alt: "Interactive Map", bg: "from-emerald-500/20 to-accent/10" },
+  { alt: "Multi-RAT View", bg: "from-amber-500/20 to-accent/10" },
+  { alt: "Client Dashboard", bg: "from-violet-500/20 to-accent/10" },
+  { alt: "Regression Analysis", bg: "from-rose-500/20 to-accent/10" },
 ];
 
-export function Hero() {
+const stats = [
+  { value: "13+", label: "KPI Charts" },
+  { value: "4", label: "RAT Technologies" },
+  { value: "0", label: "Servers Needed" },
+];
+
+export default function Hero() {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const next = useCallback(() => setCurrent((c) => (c + 1) % showcaseImages.length), []);
+
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(next, 2500);
+    return () => clearInterval(id);
+  }, [paused, next]);
+
   return (
-    <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-secondary via-secondary-light/50 to-secondary" />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 rounded-full blur-[120px]" />
+    <section className="pt-32 pb-20">
+      <Container>
+        <div className="text-center max-w-3xl mx-auto reveal">
+          <p className="text-xs uppercase tracking-label text-accent font-semibold mb-4">Multi-RAT Network Validation</p>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-heading-xl text-primary dark:text-white leading-[1.1] mb-6">
+            Professional Drive Test Dashboard
+          </h1>
+          <p className="text-lg text-muted max-w-2xl mx-auto mb-8">
+            Upload CSV, visualize 13+ KPIs, overlay on interactive maps, and share with clients — all in your browser. Supports LTE, 5G NR, WCDMA, GSM.
+          </p>
 
-      <Container className="relative z-10 py-20">
-        <div className="text-center max-w-4xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            {/* RAT Badges */}
-            <div className="flex items-center justify-center gap-2 mb-6">
-              {ratBadges.map((b) => (
-                <span key={b.label} className={`${b.color} text-white text-xs font-bold px-3 py-1 rounded-full`}>
-                  {b.label}
-                </span>
-              ))}
-            </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            <Button size="lg" href="https://pkfokam48.github.io/Drivetest-Telecom-Dashboard/">
+              <ExternalLink size={18} /> Try It Now
+            </Button>
+            <Button variant="outline" size="lg" href="https://github.com/pkfokam48/Drivetest-Telecom-Dashboard">
+              <GithubIcon size={18} /> View on GitHub
+            </Button>
+          </div>
+        </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-100 leading-tight mb-6">
-              Telecom Drive Test{" "}
-              <span className="text-primary">Dashboard</span>
-            </h1>
-
-            <p className="text-lg sm:text-xl text-muted max-w-2xl mx-auto mb-4">
-              Professional network validation & KPI analysis for 2G/3G/4G/5G.
-              Upload, visualize, and share — entirely in your browser.
-            </p>
-
-            <p className="text-sm text-muted/70 mb-8">
-              By <span className="text-primary">F2G-SOLUTIONS</span> / PKFOKAM48 — TELCO ACADEMY
-            </p>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <Button size="lg" href="https://pkfokam48.github.io/Drivetest-Telecom-Dashboard/">
-                <ExternalLink size={18} /> Try It Now
-              </Button>
-              <Button variant="outline" size="lg" href="https://github.com/pkfokam48/Drivetest-Telecom-Dashboard">
-                <GithubIcon size={18} /> View on GitHub
-              </Button>
-            </div>
-          </motion.div>
-
-          {/* Dashboard Preview */}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative mx-auto max-w-5xl"
-          >
-            <div className="rounded-xl border border-slate-700/50 overflow-hidden animate-glow">
-              <div className="bg-surface p-2">
-                <div className="flex gap-1.5 mb-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500/70" />
-                  <div className="w-3 h-3 rounded-full bg-amber-500/70" />
-                  <div className="w-3 h-3 rounded-full bg-emerald-500/70" />
-                </div>
-                <div className="bg-secondary rounded-lg p-8 flex items-center justify-center min-h-[300px]">
-                  <div className="grid grid-cols-3 gap-4 w-full max-w-lg">
-                    {/* Simulated dashboard widgets */}
-                    <div className="bg-surface rounded-lg p-4 col-span-2 h-32 flex items-end gap-1">
-                      {[40, 65, 45, 80, 55, 70, 90, 60, 75].map((h, i) => (
-                        <div key={i} className="flex-1 bg-primary/60 rounded-t" style={{ height: `${h}%` }} />
-                      ))}
-                    </div>
-                    <div className="bg-surface rounded-lg p-4 flex flex-col items-center justify-center">
-                      <div className="text-2xl font-bold text-primary">98.2%</div>
-                      <div className="text-xs text-muted">Coverage</div>
-                    </div>
-                    <div className="bg-surface rounded-lg p-4 flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin" />
-                    </div>
-                    <div className="bg-surface rounded-lg p-4 col-span-2 h-20 flex items-center gap-2">
-                      <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
-                        <div className="h-full w-3/4 bg-gradient-to-r from-primary to-emerald-500 rounded-full" />
+        {/* Auto-rotating showcase */}
+        <div
+          className="reveal relative mx-auto max-w-4xl"
+          style={{ perspective: "2000px" }}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
+          <div className="relative rounded-2xl border border-card-border dark:border-gray-700 overflow-hidden shadow-xl" style={{ transform: "rotateX(4deg)" }}>
+            <div className="bg-white dark:bg-gray-900 p-2">
+              <div className="flex gap-1.5 mb-2 px-2 pt-1">
+                <div className="w-3 h-3 rounded-full bg-red-400" />
+                <div className="w-3 h-3 rounded-full bg-amber-400" />
+                <div className="w-3 h-3 rounded-full bg-emerald-400" />
+              </div>
+              <div className="relative h-[300px] sm:h-[400px] overflow-hidden rounded-xl">
+                <div
+                  className="flex h-full transition-transform duration-700 ease-in-out"
+                  style={{ transform: `translateX(-${current * 100}%)` }}
+                >
+                  {showcaseImages.map((img, i) => (
+                    <div key={i} className={`flex-shrink-0 w-full h-full bg-gradient-to-br ${img.bg} flex items-center justify-center`}>
+                      <div className="text-center p-8">
+                        <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-accent/20 flex items-center justify-center">
+                          <span className="text-3xl font-bold text-accent">{i + 1}</span>
+                        </div>
+                        <p className="text-lg font-semibold text-primary dark:text-white">{img.alt}</p>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
+
+          {/* Dots */}
+          <div className="flex justify-center gap-2 mt-4">
+            {showcaseImages.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`w-2 h-2 rounded-full transition-all ${i === current ? "bg-accent w-6" : "bg-gray-300 dark:bg-gray-600"}`}
+                aria-label={`Slide ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="reveal grid grid-cols-3 gap-8 max-w-md mx-auto mt-12 text-center">
+          {stats.map((s) => (
+            <div key={s.label}>
+              <p className="text-2xl font-bold tracking-heading-lg text-primary dark:text-white">{s.value}</p>
+              <p className="text-xs text-muted mt-1">{s.label}</p>
+            </div>
+          ))}
         </div>
       </Container>
     </section>
